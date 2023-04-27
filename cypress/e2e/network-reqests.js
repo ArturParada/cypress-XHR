@@ -32,9 +32,24 @@ describe('Nrtwor Requests', () => {
             expect(request.body).to.include("email")
             console.log(response);
             expect(response.body).to.have.property("name", "Using POST in cy.intercept()")
-            
+
             expect(request.headers).to.have.property("content-type")
             expect(request.headers).to.have.property("origin", "https://example.cypress.io")
         })
+    });
+    it('Put request', () => {
+        cy.intercept({
+            method: "PUT",
+            url: "**/comments/*"
+        },
+            {
+                statusCode: 404,
+                body: { error: "test error" },
+                delay: 500
+            }).as("putComment")
+        cy.get(".network-put").click()
+        cy.wait('@putComment')
+        cy.get('.network-put-comment').should("contain", "test")
+
     });
 });
